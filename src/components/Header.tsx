@@ -3,8 +3,8 @@ import { FiSun } from "react-icons/fi";
 import { type FC, useEffect, useState } from "react";
 
 const themes = {
-  winter: "winter",
-  dracula: "dracula",
+  winter: "cupcake",
+  dracula: "sunset",
 };
 
 const getThemeFromLocalStorage = () => {

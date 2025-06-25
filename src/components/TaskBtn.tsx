@@ -1,13 +1,21 @@
-// this button enables adding a new task or changing task status
+// this button enables adding a new taskSlice.ts or changing taskSlice.ts name
+
+import type { FC } from "react";
 
 interface Props {
   isAddTask: boolean;
+  handleClick: () => void;
+  disabled: boolean;
 }
 
-export const TaskBtn: FC = ({ isAddTask }: Props) => {
+export const TaskBtn: FC<Props> = ({ isAddTask, handleClick, disabled }) => {
   return (
-    <button className="btn btn-primary">
-      {isAddTask ? "Add task" : "Rename task"}
+    <button
+      disabled={disabled}
+      onClick={handleClick}
+      className="btn btn-primary"
+    >
+      {isAddTask ? "Add taskSlice.ts" : "Update taskSlice.ts"}
     </button>
   );
 };

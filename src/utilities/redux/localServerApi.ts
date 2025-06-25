@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseUrl } from "../axios";
 import type { INewTask, ITask } from "../../types";
+
+const baseUrl = "http://localhost:8080";
 
 export const localServerApi = createApi({
   reducerPath: "localServerApi",
