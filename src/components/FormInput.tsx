@@ -23,8 +23,6 @@ export const FormInput: FC = () => {
     await createTask(task);
   };
 
-  console.log(task.text);
-
   return (
     <div className="m-3 p-4 flex-col align-middle justify-center">
       <div className="form-control m-auto w-full max-w-xs">
