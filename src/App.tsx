@@ -1,7 +1,14 @@
+import { ErrorPage, MainPage } from "./Pages";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainPage />,
+    errorElement: <ErrorPage />,
+  },
+]);
+
 export const App = () => {
-  return (
-    <div className="m-2 flex flex-col items-center">
-      <h1 className="text-3xl font-bold underline">Todo</h1>
-    </div>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 };
