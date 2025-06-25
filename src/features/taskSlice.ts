@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface DefaultState {
-  task: { text: string; id: string; done: boolean };
+  task: { text: string; id: string; completed: boolean };
 }
 
 const initialState: DefaultState = {
-  task: { text: "", id: "", done: false },
+  task: { text: "", id: "", completed: false },
 };
 
 const taskSlice = createSlice({
@@ -14,12 +14,19 @@ const taskSlice = createSlice({
   reducers: {
     setTask: (
       state,
-      action: PayloadAction<{ text?: string; id?: string; done?: boolean }>,
+      action: PayloadAction<{
+        text?: string;
+        id?: string;
+        completed?: boolean;
+      }>,
     ) => {
       state.task = { ...state.task, ...action.payload };
+    },
+    clearTask: (state) => {
+      state.task = { text: "", id: "", completed: false };
     },
   },
 });
 
-export const { setTask } = taskSlice.actions;
+export const { setTask, clearTask } = taskSlice.actions;
 export default taskSlice.reducer;

@@ -1,9 +1,18 @@
-import type { FC } from "react";
-import { useGetTasksQuery } from "../utilities/redux";
+import { type FC } from "react";
+import { type RootState, useGetTasksQuery } from "../utilities/redux";
 import { Loading } from "./Loading.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import type { INewTask } from "../types";
+import { clearTask, setTask } from "../features/taskSlice.ts";
 
 export const TaskGrid: FC = () => {
   const { data, error, isLoading } = useGetTasksQuery();
+
+  const dispatch = useDispatch();
+
+  const selectedTask: INewTask = useSelector(
+    (state: RootState) => state.todoState.task,
+  );
 
   if (isLoading) return <Loading />;
 
@@ -31,7 +40,24 @@ export const TaskGrid: FC = () => {
             >
               <div className="w-64">
                 <span className="mr-1">
-                  <input type="checkbox" className="checkbox" />
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={selectedTask.id === todo.id}
+                    onChange={() => {
+                      if (selectedTask.id === todo.id) {
+                        dispatch(clearTask());
+                      } else {
+                        dispatch(
+                          setTask({
+                            text: todo.text,
+                            id: todo.id,
+                            completed: todo.completed,
+                          }),
+                        );
+                      }
+                    }}
+                  />
                 </span>
                 {todo.text}
               </div>

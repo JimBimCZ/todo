@@ -7,8 +7,6 @@ import { setTask } from "../features/taskSlice.ts";
 import type { INewTask } from "../types";
 
 export const FormInput: FC = () => {
-  // const [task, setTask] = useState({ text: "", id: "" });
-
   const [createTask, { isLoading, error }] = useCreateTasksMutation();
 
   const dispatch = useDispatch();
@@ -20,11 +18,12 @@ export const FormInput: FC = () => {
   const task: INewTask = useSelector(
     (state: RootState) => state.todoState.task,
   );
-  console.log(task);
 
   const handleCreateTask = async () => {
     await createTask(task);
   };
+
+  console.log(task.text);
 
   return (
     <div className="m-3 p-4 flex-col align-middle justify-center">
@@ -37,6 +36,7 @@ export const FormInput: FC = () => {
           placeholder="Type here"
           className="input input-bordered w-full max-w-xs"
           onChange={handleInputChange}
+          value={task.text}
         />
       </div>
       <div className="m-2 justify-self-center">
@@ -45,11 +45,27 @@ export const FormInput: FC = () => {
         ) : error ? (
           <p>There was an error :(</p>
         ) : (
-          <TaskBtn
-            isAddTask={!task.id}
-            handleClick={handleCreateTask}
-            disabled={isLoading || task.text === ""}
-          />
+          <div className="flex align-middle justify-between w-80 max-w-xs">
+            <TaskBtn
+              isAddTask={!task.id}
+              handleClick={handleCreateTask}
+              disabled={isLoading || task.text === ""}
+            />
+            <div className="m-1.5">
+              <div className="tooltip" data-tip="Is the task done?">
+                {task.id && (
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={task.completed}
+                    onChange={() => {
+                      dispatch(setTask({ completed: !task.completed }));
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
