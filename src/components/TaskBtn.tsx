@@ -15,7 +15,7 @@ export const TaskBtn: FC<Props> = ({ isAddTask, handleClick, disabled }) => {
       onClick={handleClick}
       className="btn btn-primary"
     >
-      {isAddTask ? "Add taskSlice.ts" : "Update taskSlice.ts"}
+      {isAddTask ? "Add task" : "Update task"}
     </button>
   );
 };

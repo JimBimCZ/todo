@@ -21,7 +21,12 @@ const router = createBrowserRouter([
 export const App = () => {
   return (
     <Provider store={store}>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        pauseOnHover
+        newestOnTop
+      />
       <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
