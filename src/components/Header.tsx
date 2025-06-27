@@ -3,7 +3,7 @@ import { FiSun } from "react-icons/fi";
 import { type FC, useEffect, useState } from "react";
 
 const themes = {
-  winter: "cupcake",
+  winter: "corporate",
   dracula: "sunset",
 };
 

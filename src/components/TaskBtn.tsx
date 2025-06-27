@@ -13,7 +13,7 @@ export const TaskBtn: FC<Props> = ({ isAddTask, handleClick, disabled }) => {
     <button
       disabled={disabled}
       onClick={handleClick}
-      className="btn btn-primary"
+      className="btn btn-primary w-full sm:w-auto"
     >
       {isAddTask ? "Add task" : "Update task"}
     </button>

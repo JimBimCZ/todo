@@ -18,14 +18,15 @@ export const TaskGrid: FC<Props> = ({ taskData, isFetching, isLoading }) => {
 
   const dispatch = useDispatch();
 
-  const showingCompletedTasksOnly: boolean = useSelector(
-    (state: RootState) => state.todoState.showCompletedOnly,
-  );
+  const tasksToShow = useSelector((state: RootState) => state.todoState.show);
   const renderData = () => {
-    if (showingCompletedTasksOnly) {
+    if (tasksToShow.completed) {
       return taskData.filter((task) => task.completed);
+    } else if (tasksToShow.active) {
+      return taskData.filter((task) => !task.completed);
+    } else {
+      return taskData;
     }
-    return taskData;
   };
 
   const selectedTask: INewTask = useSelector(
@@ -51,29 +52,25 @@ export const TaskGrid: FC<Props> = ({ taskData, isFetching, isLoading }) => {
           ? `Let's create our first task`
           : "This is what we've got so far :)"}
       </li>
+
       <li className="hidden sm:flex justify-between p-2 bg-base-200 font-semibold">
-        <div className="flex-1 sm:w-1/4 text-center sm:text-left">Name</div>
-        <div className="flex-1 sm:w-1/4 text-center sm:text-left">
-          Date created
-        </div>
-        <div className="flex-1 sm:w-1/4 text-center sm:text-left">
-          Is it done?
-        </div>
-        <div className="flex-1 sm:w-1/4 text-center sm:text-left">
-          Delete Task
-        </div>
+        <div className="w-1/4 text-start">Name</div>
+        <div className="w-1/4 text-start">Date created</div>
+        <div className="w-1/4 text-start">Status</div>
+        <div className="w-1/4 text-start">Delete</div>
       </li>
+
       {taskData.length > 0
         ? renderData().map((todo) => (
             <li
               key={todo.id}
-              className="flex flex-col justify-between items-center sm:items-center p-2"
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4"
             >
-              <div className="flex items-center space-x-2 flex-1 sm:w-1/4 text-center sm:text-left">
+              <div className="flex items-center space-x-2 mb-2 sm:mb-0 flex-1 w-full sm:w-1/4 text-center sm:text-left">
                 <input
                   disabled={isFetching || isDeleting}
                   type="checkbox"
-                  className="checkbox mr-2"
+                  className="checkbox"
                   checked={selectedTask.id === todo.id}
                   onChange={() => {
                     if (selectedTask.id === todo.id) {
@@ -91,13 +88,13 @@ export const TaskGrid: FC<Props> = ({ taskData, isFetching, isLoading }) => {
                 />
                 <span className="break-words">{todo.text}</span>
               </div>
-              <div className="flex items-center justify-center sm:w-1/4 text-center sm:text-left">
+              <div className="w-full sm:w-1/4 text-center sm:text-left">
                 {new Date(todo.createdDate).toDateString()}
               </div>
-              <div className="flex items-center justify-center sm:w-1/4 text-center sm:text-left">
+              <div className="w-full sm:w-1/4 text-center sm:text-left">
                 {todo.completed ? "All done" : "Not yet"}
               </div>
-              <div className="flex items-center justify-center sm:w-1/4 mt-2 sm:mt-0">
+              <div className="w-full sm:w-1/4 flex justify-center sm:justify-start mt-2 sm:mt-0">
                 <button
                   className="btn btn-ghost btn-square"
                   disabled={isLoading || isFetching || isDeleting}

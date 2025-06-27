@@ -64,10 +64,10 @@ export const FormInput: FC<Props> = memo(
     };
 
     return (
-      <div className="m-3 p-4 flex-col align-middle justify-center">
-        <div className="form-control m-auto w-full max-w-xs">
+      <div className="m-3 p-4 flex flex-col items-center justify-center">
+        <div className="w-full max-w-xs">
           <label className="label">
-            <span className="label-text">
+            <span className="label-text text-lg font-semibold">
               {!task.id || data.length === 0
                 ? "Add a new task"
                 : "Update existing task"}
@@ -76,31 +76,31 @@ export const FormInput: FC<Props> = memo(
           <input
             type="text"
             placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             onChange={handleInputChange}
             value={task.text}
           />
         </div>
-        <div className="m-2 justify-self-center">
-          <div className="flex align-middle justify-between w-80 max-w-xs">
-            <TaskBtn
-              isAddTask={!task.id || (task.text === "" && !task.id)}
-              handleClick={handleCreateUpdateTask}
-              disabled={
-                isLoading ||
-                isUpdating ||
-                isFetching ||
-                isDataLoading ||
-                task.text === ""
-              }
-            />
-            <div className="m-1.5">
-              {task.id && <TaskCheckbox task={task} />}
+        <div className="w-full max-w-xs flex flex-col sm:flex-row justify-between gap-2 mt-4">
+          <TaskBtn
+            isAddTask={!task.id || (task.text === "" && !task.id)}
+            handleClick={handleCreateUpdateTask}
+            disabled={
+              isLoading ||
+              isUpdating ||
+              isFetching ||
+              isDataLoading ||
+              task.text === ""
+            }
+          />
+          {task.id && (
+            <div className="w-full sm:w-auto">
+              <TaskCheckbox task={task} />
             </div>
-          </div>
+          )}
         </div>
         {(isLoading || isUpdating || isFetching || isDataLoading) && (
-          <div className="flex">
+          <div className="mt-4 flex justify-center">
             <Loading />
           </div>
         )}

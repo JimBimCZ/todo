@@ -15,7 +15,6 @@ export function useBulkDelete(
         try {
           const res = await deleteTask(task.id);
           await sleep(10);
-          console.log(res);
           if (res.error) {
             return { success: false, taskId: task.id, error: res.error.status };
           } else {

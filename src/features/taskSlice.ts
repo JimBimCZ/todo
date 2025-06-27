@@ -2,12 +2,12 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface DefaultState {
   task: { text: string; id: string; completed: boolean };
-  showCompletedOnly: boolean;
+  show: { all: boolean; active: boolean; completed: boolean };
 }
 
 const initialState: DefaultState = {
   task: { text: "", id: "", completed: false },
-  showCompletedOnly: false,
+  show: { all: true, active: false, completed: false },
 };
 
 const taskSlice = createSlice({
@@ -27,11 +27,18 @@ const taskSlice = createSlice({
     clearTask: (state) => {
       state.task = { text: "", id: "", completed: false };
     },
-    showCompletedTasksOnly: (state, action) => {
-      state.showCompletedOnly = action.payload;
+    setShow: (
+      state,
+      action: PayloadAction<{
+        all: boolean;
+        active: boolean;
+        completed: boolean;
+      }>,
+    ) => {
+      state.show = { ...state.show, ...action.payload };
     },
   },
 });
 
-export const { setTask, clearTask, showCompletedTasksOnly } = taskSlice.actions;
+export const { setTask, clearTask, setShow } = taskSlice.actions;
 export default taskSlice.reducer;
