@@ -1,6 +1,6 @@
 import { FaRegMoon } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
-import { type FC, useEffect, useState } from "react";
+import { type FC, memo, useEffect, useState } from "react";
 
 const themes = {
   winter: "corporate",
@@ -11,7 +11,7 @@ const getThemeFromLocalStorage = () => {
   return localStorage.getItem("theme") || themes.winter;
 };
 
-export const Header: FC = () => {
+export const Header: FC = memo(() => {
   const [theme, setTheme] = useState(getThemeFromLocalStorage());
 
   const toggleTheme = () => {
@@ -36,4 +36,4 @@ export const Header: FC = () => {
       </div>
     </header>
   );
-};
+});

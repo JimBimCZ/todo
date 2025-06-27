@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TaskBtn } from "./TaskBtn.tsx";
 import { Loading } from "./Loading.tsx";
 import { clearTask, setTask } from "../features";
-import type { INewTask, ITask } from "../types";
+import type { ITask } from "../types";
 import { TaskCheckbox } from "./TaskCheckbox.tsx";
 import { isCustomError } from "../utilities/utilFunctions";
 import { toast } from "react-toastify";
@@ -21,6 +21,8 @@ interface Props {
 
 export const FormInput: FC<Props> = memo(
   ({ isFetching, isDataLoading, data }) => {
+    const task = useSelector((state: RootState) => state.todoState.task);
+
     const [createTask, { isLoading }] = useCreateTaskMutation();
 
     const [updateTask, { isLoading: isUpdating }] = useUpdateTaskTextMutation();
@@ -31,9 +33,14 @@ export const FormInput: FC<Props> = memo(
       dispatch(setTask({ text: e.target.value }));
     };
 
-    const task: INewTask = useSelector(
-      (state: RootState) => state.todoState.task,
-    );
+    const buttonDisabled =
+      isLoading ||
+      isUpdating ||
+      isFetching ||
+      isDataLoading ||
+      task.text === "";
+
+    const loadingState = isLoading || isUpdating || isFetching || isDataLoading;
 
     const handleCreateUpdateTask = async () => {
       if (!task.id) {
@@ -85,13 +92,7 @@ export const FormInput: FC<Props> = memo(
           <TaskBtn
             isAddTask={!task.id || (task.text === "" && !task.id)}
             handleClick={handleCreateUpdateTask}
-            disabled={
-              isLoading ||
-              isUpdating ||
-              isFetching ||
-              isDataLoading ||
-              task.text === ""
-            }
+            disabled={buttonDisabled}
           />
           {task.id && (
             <div className="w-full sm:w-auto">
@@ -99,7 +100,7 @@ export const FormInput: FC<Props> = memo(
             </div>
           )}
         </div>
-        {(isLoading || isUpdating || isFetching || isDataLoading) && (
+        {loadingState && (
           <div className="mt-4 flex justify-center">
             <Loading />
           </div>
