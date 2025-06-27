@@ -13,11 +13,15 @@ export function useBulkDelete(
       .filter((task) => task.completed)
       .map(async (task) => {
         try {
-          await deleteTask(task.id);
+          const res = await deleteTask(task.id);
           await sleep(10);
-          return { success: true, taskId: task.id };
+          console.log(res);
+          if (res.error) {
+            return { success: false, taskId: task.id, error: res.error.status };
+          } else {
+            return { success: true, taskId: task.id };
+          }
         } catch (err) {
-          // handle error inside, or bubble up
           return { success: false, taskId: task.id, error: err };
         }
       });

@@ -13,9 +13,13 @@ export function useBulkComplete(
       .filter((task) => !task.completed)
       .map(async (task) => {
         try {
-          await completeTask(task.id);
+          const res = await completeTask(task.id);
           await sleep(10);
-          return { success: true, taskId: task.id };
+          if (res.error) {
+            return { success: false, taskId: task.id, error: res.error.status };
+          } else {
+            return { success: true, taskId: task.id };
+          }
         } catch (err) {
           return { success: false, taskId: task.id, error: err };
         }
@@ -23,12 +27,12 @@ export function useBulkComplete(
 
     const results = await Promise.all(completePromises);
     const failed = results.filter((res) => !res.success);
-    if (failed.length === 0) {
-      toast.success("All tasks marked as completed!");
-    } else {
+    if (failed.length > 0) {
       failed.forEach(({ taskId, error }) => {
         toast.error(`Failed to complete task ${taskId}: ${error}`);
       });
+    } else {
+      toast.success("All tasks marked as completed!");
     }
   };
 

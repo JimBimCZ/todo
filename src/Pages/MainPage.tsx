@@ -3,7 +3,7 @@ import { FormInput, TaskGrid, UtilityPanel } from "../components";
 import { useGetTasksQuery } from "../utilities/redux";
 
 export const MainPage: FC = () => {
-  const { data, error, isLoading, isFetching } = useGetTasksQuery();
+  const { data, isLoading, isFetching } = useGetTasksQuery();
 
   return (
     <>
@@ -12,7 +12,6 @@ export const MainPage: FC = () => {
       </h1>
       <FormInput
         isFetching={isFetching}
-        dataError={error}
         isDataLoading={isLoading}
         data={data ?? []}
       />

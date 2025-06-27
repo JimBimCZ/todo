@@ -6,7 +6,7 @@ import {
 } from "../utilities/redux";
 import type { INewTask } from "../types";
 import { useDispatch } from "react-redux";
-import { setTask } from "../features/taskSlice.ts";
+import { setTask } from "../features";
 import { isCustomError } from "../utilities/utilFunctions";
 import { toast } from "react-toastify";
 
@@ -15,9 +15,8 @@ interface Props {
 }
 
 export const TaskCheckbox: FC<Props> = memo(({ task }) => {
-  const [completeTask, { error, isLoading: isCompleting }] =
-    useCompleteTaskMutation();
-  const [incompleteTask, { error: updatingError, isLoading: isUpdating }] =
+  const [completeTask, { isLoading: isCompleting }] = useCompleteTaskMutation();
+  const [incompleteTask, { isLoading: isUpdating }] =
     useIncompleteTaskMutation();
   const { isFetching, isLoading } = useGetTasksQuery();
 
@@ -25,7 +24,7 @@ export const TaskCheckbox: FC<Props> = memo(({ task }) => {
 
   const handleCompleteTask = async () => {
     try {
-      await completeTask(task.id);
+      await completeTask(task.id).unwrap();
       toast.success("Great job! Task successfully set as completed.");
       dispatch(setTask({ completed: true }));
     } catch (err) {
@@ -39,7 +38,7 @@ export const TaskCheckbox: FC<Props> = memo(({ task }) => {
 
   const handleIncompleteTask = async () => {
     try {
-      await incompleteTask(task.id);
+      await incompleteTask(task.id).unwrap();
       toast.success("Task successfully set as in progress.");
       dispatch(setTask({ completed: false }));
     } catch (err) {
@@ -60,18 +59,6 @@ export const TaskCheckbox: FC<Props> = memo(({ task }) => {
       handleCompleteTask();
     }
   };
-
-  if (error) {
-    return toast.error(
-      "Oh no, something went horribly wrong while trying to set this task as completed. :(",
-    );
-  }
-
-  if (updatingError) {
-    return toast.error(
-      "Oh no, something went horribly wrong while trying to set the status of selected task back to in progress :(",
-    );
-  }
 
   return (
     <div

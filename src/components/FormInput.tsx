@@ -7,27 +7,23 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { TaskBtn } from "./TaskBtn.tsx";
 import { Loading } from "./Loading.tsx";
-import { clearTask, setTask } from "../features/taskSlice.ts";
+import { clearTask, setTask } from "../features";
 import type { INewTask, ITask } from "../types";
 import { TaskCheckbox } from "./TaskCheckbox.tsx";
 import { isCustomError } from "../utilities/utilFunctions";
 import { toast } from "react-toastify";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import type { SerializedError } from "@reduxjs/toolkit";
 
 interface Props {
   isFetching: boolean;
-  dataError: FetchBaseQueryError | SerializedError | undefined;
   isDataLoading: boolean;
   data: ITask[];
 }
 
 export const FormInput: FC<Props> = memo(
-  ({ isFetching, dataError, isDataLoading, data }) => {
-    const [createTask, { isLoading, error }] = useCreateTaskMutation();
+  ({ isFetching, isDataLoading, data }) => {
+    const [createTask, { isLoading }] = useCreateTaskMutation();
 
-    const [updateTask, { isLoading: isUpdating, error: updateError }] =
-      useUpdateTaskTextMutation();
+    const [updateTask, { isLoading: isUpdating }] = useUpdateTaskTextMutation();
 
     const dispatch = useDispatch();
 
@@ -42,7 +38,7 @@ export const FormInput: FC<Props> = memo(
     const handleCreateUpdateTask = async () => {
       if (!task.id) {
         try {
-          await createTask(task.text);
+          await createTask(task.text).unwrap();
           toast.success("Task created successfully :)");
           dispatch(clearTask());
         } catch (err) {
@@ -54,7 +50,7 @@ export const FormInput: FC<Props> = memo(
         }
       } else {
         try {
-          await updateTask(task);
+          await updateTask(task).unwrap();
           toast.success("Task updated successfully :)");
           dispatch(clearTask());
         } catch (err) {
@@ -108,8 +104,6 @@ export const FormInput: FC<Props> = memo(
             <Loading />
           </div>
         )}
-        {error ? <div>error</div> : updateError ? <div>updateError</div> : null}
-        {dataError && <div>dataError.message</div>}
       </div>
     );
   },

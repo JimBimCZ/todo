@@ -5,10 +5,13 @@ import {
   useDeleteTaskMutation,
 } from "../utilities/redux";
 import type { ITask } from "../types";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { showCompletedTasksOnly } from "../features/taskSlice.ts";
+import { showCompletedTasksOnly } from "../features";
 import { useBulkComplete, useBulkDelete } from "../utilities/hooks";
+import {
+  countCompletedTasks,
+  countIncompleteTasks,
+} from "../utilities/utilFunctions";
 
 interface Props {
   taskData: ITask[];
@@ -21,9 +24,8 @@ export const UtilityPanel: FC<Props> = ({
   isFetching,
   isDataLoading,
 }) => {
-  const [completeTask, { isLoading, error }] = useCompleteTaskMutation();
-  const [deleteTask, { isLoading: isDeleting, error: deleteError }] =
-    useDeleteTaskMutation();
+  const [completeTask, { isLoading }] = useCompleteTaskMutation();
+  const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
 
   const { deleteAll } = useBulkDelete(taskData, deleteTask);
   const { completeAll } = useBulkComplete(taskData, completeTask);
@@ -38,46 +40,41 @@ export const UtilityPanel: FC<Props> = ({
     dispatch(showCompletedTasksOnly(!showCompletedOnly));
   };
 
-  const countCompletedTasks = useMemo(() => {
-    let completedTasksCount = 0;
-    taskData.forEach((task) =>
-      task.completed ? (completedTasksCount = completedTasksCount + 1) : null,
-    );
-    return completedTasksCount;
+  const showCompletedTasks = useMemo(() => {
+    return countCompletedTasks(taskData);
   }, [taskData]);
 
-  if (error) {
-    return toast.error(
-      "Oh no, something went horribly wrong while trying to set all tasks as completed. :(",
-    );
-  }
-
-  if (deleteError) {
-    return toast.error(
-      "Oh no, something went horribly wrong while trying to delete all completed tasks. :(",
-    );
-  }
-
   return (
-    <div className="navbar bg-base-100 w-full flex justify-between shadow-sm">
-      <div className="menu menu-horizontal justify-between px-1">
-        <div className="flex justify-between">
+    <div className="navbar bg-base-100 w-full flex justify-between items-center shadow-sm">
+      <div className="menu menu-horizontal justify-between px-1 flex items-center">
+        <div className="flex items-center space-x-2">
           <button
-            disabled={isFetching || isLoading || isDeleting || isDataLoading}
+            disabled={
+              isFetching ||
+              isLoading ||
+              isDeleting ||
+              isDataLoading ||
+              countIncompleteTasks(taskData) < 1
+            }
             onClick={completeAll}
             className="btn btn-accent ml-3"
           >
             Complete all
           </button>
           <button
-            disabled={isFetching || isLoading || isDeleting}
+            disabled={
+              isFetching ||
+              isLoading ||
+              isDeleting ||
+              countCompletedTasks(taskData) < 1
+            }
             onClick={deleteAll}
             className="btn btn-secondary ml-3"
           >
             Delete all completed
           </button>
           <div className="tooltip" data-tip="Show completed tasks only">
-            <div className="flex justify-center">
+            <div className="flex items-center">
               <input
                 disabled={isFetching || isLoading || isDeleting}
                 onChange={handleToggle}
@@ -88,10 +85,8 @@ export const UtilityPanel: FC<Props> = ({
           </div>
         </div>
       </div>
-      <div>
-        <p className="flex justify-self-end">
-          Completed tasks: {countCompletedTasks}
-        </p>
+      <div className="flex items-center">
+        <p className="flex">Completed tasks: {showCompletedTasks}</p>
       </div>
     </div>
   );
