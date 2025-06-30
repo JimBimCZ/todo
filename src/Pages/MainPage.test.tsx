@@ -3,14 +3,14 @@ import "@testing-library/jest-dom";
 import { vi } from "vitest";
 import { MainPage } from "./MainPage";
 
-// Mock components used within MainPage if needed
+// Mock components
 vi.mock("../components", () => ({
   FormInput: () => <div data-testid="form-input">FormInput</div>,
   TaskGrid: () => <div data-testid="task-grid">TaskGrid</div>,
   UtilityPanel: () => <div data-testid="utility-panel">UtilityPanel</div>,
 }));
 
-// Mock the RTK Query hook
+// Mock RTK Query hook
 import { useGetTasksQuery } from "../utilities/redux";
 
 vi.mock("../utilities/redux", () => ({
@@ -44,7 +44,6 @@ describe("MainPage", () => {
     render(<MainPage />);
 
     expect(screen.getByText("Let's get organised")).toBeInTheDocument();
-    // Since data is undefined, child components get empty arrays
     expect(screen.getByTestId("form-input")).toBeInTheDocument();
     expect(screen.getByTestId("task-grid")).toBeInTheDocument();
     expect(screen.getByTestId("utility-panel")).toBeInTheDocument();
